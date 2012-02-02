@@ -1,9 +1,9 @@
-#OpenLayers -OpenLayers 2.10 Beginner's Guide
+# OpenLayers -OpenLayers 2.10 Beginner's Guide
 The aim of this book is to provide a guide for beginners and also serve as a reference (but not a replacement for the OpenLayers docs). We use examples throughout the book to deomstrate OpenLayers concepts. This site will serve as extension for the OpenLayers book and contain code samples, error fixes, and other related things. 
 
-#Code Files
+# Code Files
 The source code files are grouped by chapter and example. To download the code, click the link above. 
 
-#More Info
+# More Info
 The site for my book is http://vasir.net/openlayers_book/
 To purchase it, visit https://www.packtpub.com/openlayers-2-1-javascript-web-mapping-library-beginners-guide/book
