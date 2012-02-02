@@ -1,0 +1,112 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    var vector_layer;
+    
+    function init() {
+        //Create a map with an empty array of controls
+        map = new OpenLayers.Map('map_element');
+
+        //Create a base layer
+        var wms_layer = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+        map.addLayer(wms_layer);
+        
+        //Add vector layer
+        vector_layer = new OpenLayers.Layer.Vector('Basic Vector Layer');
+        map.addLayer(vector_layer);
+
+        //Create some points
+        for(var i=0; i<20; i++){
+            vector_layer.addFeatures([new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(
+                    (Math.floor(Math.random() * 360) - 180),
+	                (Math.floor(Math.random() * 180) - 90)
+	            ),
+	            {
+                    'population': Math.floor(Math.random() * 2000)
+                }
+            )]);
+        }     
+
+        //Create a style object
+        var vector_style = new OpenLayers.Style();
+                
+        //ADD RULES            
+        //We'll use three rules to check for population size
+        var rule_pop_low = new OpenLayers.Rule({
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.LESS_THAN,
+                property: 'population',
+                value: 500
+            }),
+            symbolizer: {
+                fillColor: '#ababab', fillOpacity:.8, 
+                pointRadius:8, strokeColor: '#454545', 
+                strokeWidth:2
+            }
+        });
+        
+        //Medium pop
+        var rule_pop_mid = new OpenLayers.Rule({
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.BETWEEN,
+                property: 'population',
+                lowerBoundary:500,
+                upperBoundary:1500
+            }),
+            symbolizer: {
+                fillColor: '#aaee77', fillOpacity:.8, 
+                pointRadius:14, strokeColor: '#669933', 
+                strokeWidth:5
+            }
+        });
+                
+        //High pop
+        var rule_pop_high = new OpenLayers.Rule({
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.GREATER_THAN,
+                property: 'population',
+                value: 1500
+            }),
+            symbolizer: {
+                fillColor: '#BD1922', fillOpacity:.8, 
+                pointRadius:20, strokeColor: '#812B30', 
+                strokeWidth:5
+            }
+        });
+        
+        
+        //Add the rules to the style object
+        vector_style.addRules([rule_pop_low, rule_pop_mid, rule_pop_high]);
+        
+        //Create a style map object
+        var vector_style_map = new OpenLayers.StyleMap({
+            'default': vector_style
+        });
+       
+        //Add the style map to the vector layer
+        vector_layer.styleMap = vector_style_map;
+        
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 600px; height: 600px;'></div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+        map = new OpenLayers.Map('map_element', {});
+
+        //Create a base layer
+        var wms_base = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {attribution: 'test'}
+        );
+
+        map.addLayers([wms_base]);
+        
+        //Add a control to the map
+        map.addControl(new OpenLayers.Control.Graticule({
+            intervals: [50,30,15,7,4,2,1,.5],
+            labelled: false,
+        }));
+
+        map.addControl(new OpenLayers.Control.MousePosition({
+
+        }))
+        
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+    <div id='test'></div>
+</body>
+</html>

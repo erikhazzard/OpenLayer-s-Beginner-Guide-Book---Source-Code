@@ -1,0 +1,133 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <style type='text/css'> 
+        /*Custom Button*/ 
+        .olControlCustomButtonItemInactive { 
+            background:#22dd22;
+            border:5px solid #202020; 
+            cursor: pointer;
+            height: 28px; 
+            width:  28px;  
+        } 
+
+        /*Custom Toggle Button*/ 
+        .olControlCustomButtonToggleItemActive { 
+            background:#336699;
+            border:5px solid #202020; 
+            cursor: pointer;
+            height: 28px; 
+            width:  28px;  
+        } 
+        .olControlCustomButtonToggleItemInactive { 
+            background:#003366;
+            border:5px solid #202020; 
+            cursor: pointer;
+            height: 28px; 
+            width:  28px;  
+        } 
+    </style> 
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+        map = new OpenLayers.Map('map_element', {});
+
+        //Create a base layer
+        var wms_base = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+
+        map.addLayer(wms_base);
+
+        var custom_button_func = function(){ 
+            //Get a random coordinate from -90 to 90
+	        var random_lon = Math.floor(Math.random() * 180) - 90;
+	        var random_lat = Math.floor(Math.random() * 180) - 90;
+
+	        if(map.layers[0].opacity === 1){
+		        //If the layer opacity is 1 (fully opaque), then change it and zoom
+		        map.layers[0].setOpacity(.5);
+		        map.setCenter(new OpenLayers.LonLat(random_lon, random_lat), 3);
+	        }
+	        else{
+		        //If the layer opacity is anything but 1, change it and zoom
+		        map.layers[0].setOpacity(1);
+		        map.setCenter(new OpenLayers.LonLat(random_lon, random_lat), 3);
+	        }
+        };
+
+        var custom_button = new OpenLayers.Control.Button({
+            displayClass: 'olControlCustomButton', 
+            trigger: custom_button_func,
+        })
+
+        var control_panel = new OpenLayers.Control.Panel({}); 
+
+        //Add some controls to it
+        control_panel.addControls([
+            custom_button
+        ])
+
+        // SET UP FUNCTIONS
+        //
+        //Function that the map will call when the map is clicked (only when
+        //  the toggle button is active though)
+        var map_event_function = function(){
+            map.layers[0].setOpacity(Math.random());
+        }        
+
+        //Create a function for the toggle button
+        var toggle_button_activate_func = function(){
+            //Attach the map_event_function to the map
+            map.events.register('click', map, map_event_function);     
+        } 
+
+        var toggle_button_deactivate_func = function(){
+            //Remove the map_event_function from the map
+            map.events.unregister('click', map, map_event_function);    
+
+            //Restore the layer's opacity
+            map.layers[0].setOpacity(1); 
+        }
+
+        //CREATE TOGGLE BUTTON OBJECT
+        //
+        //Create the toggle button object
+        var custom_toggle_button = new OpenLayers.Control.Button({
+            displayClass: 'olControlCustomButtonToggle',
+            eventListeners: {
+                'activate': toggle_button_activate_func,
+                'deactivate': toggle_button_deactivate_func
+            },
+            type: OpenLayers.Control.TYPE_TOGGLE
+        })
+    
+        //ADD BUTTON TO PANEL
+        //
+        control_panel.addControls([custom_toggle_button]);
+
+        //Add the Panel to the map
+        map.addControl(control_panel);
+
+        control_panel.moveTo(new OpenLayers.Pixel(450,0));
+
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+    <div id='panel_div'></div>
+</body>
+</html>

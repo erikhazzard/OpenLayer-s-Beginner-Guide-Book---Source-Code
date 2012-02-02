@@ -1,0 +1,47 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' />
+	<script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+		//Create the map object
+		map = new OpenLayers.Map('map_element',{
+			maxExtent: new OpenLayers.Bounds(
+			-128 * 156543.0339,
+			-128 * 156543.0339,
+			128 * 156543.0339,
+			128 * 156543.0339),
+			maxResolution: 156543.0339,                
+			units: 'm',
+			projection: new OpenLayers.Projection('EPSG:900913'),
+			displayProjection: new OpenLayers.Projection("EPSG:4326"),
+		});
+
+		var ve_road = new OpenLayers.Layer.VirtualEarth(
+			"Road",
+			{sphericalMercator:true}
+		);
+
+		//Add the google map layers
+		map.addLayers([ve_road]);
+
+		//Add a layer switcher control
+		map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+		// Zoom the map to the max extent 
+		if(!map.getCenter()){
+			map.zoomToMaxExtent();
+		}
+	}
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

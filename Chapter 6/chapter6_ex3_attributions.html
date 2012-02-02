@@ -1,0 +1,43 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+        map = new OpenLayers.Map('map_element', {});
+
+        //Create a base layer
+		var wms_base = new OpenLayers.Layer.WMS(
+			'OpenLayers WMS',
+			'http://vmap0.tiles.osgeo.org/wms/vmap0',
+			{layers: 'basic'},
+			{attribution: 'Base WMS layer'}
+		);
+    
+        /* Setup our two layer objects */
+		var wms_state_lines = new OpenLayers.Layer.WMS(
+			'State Line Layer',
+			'http://vmap0.tiles.osgeo.org/wms/vmap0',
+			{layers: 'stateboundary'},
+			{attribution: 'State Boundary', isBaseLayer: false,
+			 opacity: .2}
+		);
+
+        map.addLayers([wms_base, wms_state_lines]);
+
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

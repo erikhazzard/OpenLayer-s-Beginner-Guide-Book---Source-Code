@@ -1,0 +1,75 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type='text/javascript'>
+
+    var map;
+    var vector_layer;
+    function init() {
+        //Create a map with an empty array of controls
+        map = new OpenLayers.Map('map_element');
+
+        //Create a base layer
+        var google_map = new OpenLayers.Layer.Google(
+            'Google Layer',
+            {}
+        );
+        map.addLayer(google_map);
+        
+        //Create a base layer
+        /*var wms_layer = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+        map.addLayer(wms_layer);*/
+        //Add vector layer
+        vector_layer = new OpenLayers.Layer.Vector('Flickr Data',
+        {
+            projection: new OpenLayers.Projection('EPSG:4326'),
+            protocol: new OpenLayers.Protocol.HTTP({
+                url: 'flickr_data.kml',
+                format: new OpenLayers.Format.KML({
+                    extractAttributes: true
+                })
+            }),
+            strategies: [new OpenLayers.Strategy.Fixed()]
+        });
+        map.addLayer(vector_layer);
+
+        /*
+        //Create a style object to be used by a StyleMap object
+        var vector_style = new OpenLayers.Style({
+            'fillColor': '#669933',
+            'fillOpacity': .8,
+            'strokeColor': '#aaee77',
+            'strokeWidth': 3,
+            'pointRadius': 8
+        });
+        
+        //Create a style map object and set the 'default' intent to the 
+        //  style object we just created
+        var vector_style_map = new OpenLayers.StyleMap({
+            'default': vector_style
+        });
+
+        //Add the style map to the vector layer
+        vector_layer.styleMap = vector_style_map;
+        */
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 600px; height: 600px;'></div>
+</body>
+</html>

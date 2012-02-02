@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'> 
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'> 
+<head> 
+    <meta http-equiv='content-type' content='text/html;charset=UTF-8' /> 
+
+    <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+            //Create the map object
+            map = new OpenLayers.Map('map_element');
+
+
+            //Streets (Default) Layer
+            var yahoo_street = new OpenLayers.Layer.Yahoo(
+                "Street",
+                {type: YAHOO_MAP_REG, sphericalMercator: true}
+            );
+
+            //Add the Yahoo map layers
+            map.addLayers([yahoo_street]);
+
+            //Add a layer switcher control
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            //Set the center of the map
+            map.zoomToExtent(map.getMaxExtent(), true);
+        }
+
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

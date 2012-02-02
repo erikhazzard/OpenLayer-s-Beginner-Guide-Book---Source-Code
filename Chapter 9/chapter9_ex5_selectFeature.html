@@ -1,0 +1,132 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map, vector_layer;
+    
+    function init() {
+        //Create a map with an empty array of controls
+        map = new OpenLayers.Map('map_element');
+
+        //Create a base layer
+        var wms_layer = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+        map.addLayer(wms_layer);
+
+	//Create and add vector layer
+    vector_layer = new OpenLayers.Layer.Vector('Basic Vector Layer');
+    map.addLayer(vector_layer);
+        
+
+	//Create and add a couple features
+	var feature_point_1 = new OpenLayers.Feature.Vector(
+		new OpenLayers.Geometry.Point(6.055, 46.234),
+		{
+		    'location': 'Cern',
+		    'description': "Stand back, I'm going to try science!"
+		}
+	);
+	var feature_point_2 = new OpenLayers.Feature.Vector(
+		new OpenLayers.Geometry.Point(-129, 3),
+		{
+		    'location': 'The Sea',
+		    'description': 'Here be dragons'
+		}
+	);
+	var feature_polygon = new OpenLayers.Feature.Vector(
+	    //We'll make a polgon from a linear ring object, which consists of points
+		new OpenLayers.Geometry.Polygon(new OpenLayers.Geometry.LinearRing(
+		[
+		    new OpenLayers.Geometry.Point(-124.2, 41.9),
+		    new OpenLayers.Geometry.Point(-120.1, 41.9),
+		    new OpenLayers.Geometry.Point(-120, 39),
+		    new OpenLayers.Geometry.Point(-114.5, 34.9),
+		    new OpenLayers.Geometry.Point(-114.7, 32.7),
+		    new OpenLayers.Geometry.Point(-117.1, 32.5),
+		    new OpenLayers.Geometry.Point(-120, 34),
+		    new OpenLayers.Geometry.Point(-123.7, 38.4)
+		    //We won't pass in the first point, the polygon will close automatically
+		]
+		)),
+		{
+		    'location': 'Fanghorn Forest',
+		    'description': 'Land of the Ents'
+		}
+	);
+	vector_layer.addFeatures([feature_point_1, feature_point_2, feature_polygon]);
+
+	//Create and add selectFeature control
+	var select_feature_control = new OpenLayers.Control.SelectFeature(
+		vector_layer, 
+		{
+			multiple: false,
+			toggle: true,
+			toggleKey: 'ctrlKey',
+			multipleKey: 'shiftKey'	
+		}
+	);
+	map.addControl(select_feature_control);	
+
+	//Activate the control
+	select_feature_control.activate();
+
+	//Finally, let's add some events so we can do stuff when the user 
+	//	interacts with the features
+	function selected_feature(event){
+	    //clear out the log's contents
+	    document.getElementById('map_feature_log').innerHTML = '';
+	    
+	    //Show the current selected feature (passed in from the event object)
+	    var display_text = 'Clicked on: ' 
+	        + '<strong>' + event.feature.attributes.location + '</strong>'
+	        + ': ' + event.feature.attributes.description + '<hr />';
+		document.getElementById('map_feature_log').innerHTML = display_text;
+		
+		//Show all the selected features
+		document.getElementById('map_feature_log').innerHTML += 'All selected features: ';
+		
+		//Now, loop through the selected feature array 
+		for(var i=0; i<vector_layer.selectedFeatures.length; i++){
+            document.getElementById('map_feature_log').innerHTML += 
+                vector_layer.selectedFeatures[i].attributes.location + ' | ';
+        }
+	}
+	function unselected_feature(event){
+	    var display_text = event.feature.attributes.location + ' unselected!' + '<hr />';
+		document.getElementById('map_feature_log').innerHTML = display_text;
+		
+		//Show all the selected features
+		document.getElementById('map_feature_log').innerHTML += 'All selected features: ';
+		
+		//Now, loop through the selected feature array 
+		for(var i=0; i<vector_layer.selectedFeatures.length; i++){
+            document.getElementById('map_feature_log').innerHTML += 
+                vector_layer.selectedFeatures[i].attributes.location + ' | ';
+        }
+	}
+	
+	//Register the event
+	vector_layer.events.register('featureselected', this, selected_feature);
+	vector_layer.events.register('featureunselected', this, unselected_feature);
+	
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+	
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 600px; height: 600px;'></div>
+    <div id='map_feature_log'></div>
+</body>
+</html>

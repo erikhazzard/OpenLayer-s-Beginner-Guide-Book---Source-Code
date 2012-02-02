@@ -1,0 +1,46 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+        //Create a map with an empty array of controls
+        map = new OpenLayers.Map('map_element');
+
+        //Create a base layer
+        var wms_layer = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+        
+        var vector_layer = new OpenLayers.Layer.Vector('Basic Vector Layer');
+
+        //Add point
+        var point = new OpenLayers.Geometry.Point(-72, 42);
+        var feature_point = new OpenLayers.Feature.Vector(point);
+        vector_layer.addFeatures([feature_point]);
+        
+        map.addLayers([wms_layer, vector_layer]);
+        
+        //Add a editing control bar
+        map.addControl(new OpenLayers.Control.EditingToolbar(vector_layer));
+
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+        
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 600px; height: 600px;'></div>
+</body>
+</html>

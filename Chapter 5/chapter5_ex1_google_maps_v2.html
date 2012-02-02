@@ -1,0 +1,62 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+	<title>My OpenLayers Map</title>
+	<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;keyABQIAAAAIKnay6FXRbCarRCLzp6OSBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTSwhUv42NGUmSz4fSrk_Fa2Tgi9g'></script>	
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+            //Create the map object
+            map = new OpenLayers.Map('map_element');
+
+            //Create Google Map Layer objects
+            var google_hybrid = new OpenLayers.Layer.Google(
+                "Google Hybrid",
+                {type: G_HYBRID_MAP, numZoomLevels: 20}
+            );
+            var google_physical = new OpenLayers.Layer.Google(
+                "Google Physical",
+                {type: G_PHYSICAL_MAP, numZoomLevels: 22}
+            );
+            var google_satellite = new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {type: G_SATELLITE_MAP}
+            );
+
+            //Google streets is the normal map type, so we don't need to pass in a type
+            var google_streets = new OpenLayers.Layer.Google(
+                "Google Streets",
+                {}
+            );
+
+            //Google Maps isn't just for Earth...
+            var google_mars = new OpenLayers.Layer.Google(
+                "Google Mars",
+                {type: G_MARS_VISIBLE_MAP}
+            );
+
+            //Add the google map layers
+            map.addLayers([google_hybrid,google_physical,google_satellite,
+                google_streets,google_mars]);
+
+			// Add a layer switcher control
+			map.addControl(new OpenLayers.Control.LayerSwitcher({}));
+			
+			// Zoom the map to the max extent 
+			if(!map.getCenter()){
+				map.zoomToMaxExtent();
+			}
+        }
+
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

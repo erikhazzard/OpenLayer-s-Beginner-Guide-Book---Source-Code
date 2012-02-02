@@ -1,0 +1,47 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <link rel='stylesheet' href='control_style.css' />
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+        //Create a map with an empty array of controls
+        map = new OpenLayers.Map('map_element', {
+            controls: [new OpenLayers.Control.Navigation()]
+        });
+
+        //Create a base layer
+        var wms = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+
+        map.addLayer(wms);
+
+        //Control with default styles
+        map.addControl(new OpenLayers.Control.ScaleLine());
+
+        //Add a NavToolbar Control
+        map.addControl(new OpenLayers.Control.NavToolbar());
+
+        //Add an overview map
+        map.addControl(new OpenLayers.Control.OverviewMap());
+
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

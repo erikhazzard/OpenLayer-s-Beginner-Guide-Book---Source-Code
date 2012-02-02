@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8' />
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+
+    function init() {
+        //Create a listener function
+		function zoomend_event(event){
+			alert('Done zooming');
+		}
+		function update_opacity(event){
+			map.layers[0].setOpacity(Math.random());
+		}
+    
+	    //Create a map with an empty array of controls
+        map = new OpenLayers.Map('map_element', {
+            eventListeners: {
+                'zoomend': zoomend_event,
+                'moveend': update_opacity
+            }
+        });
+
+        //Create a base layer
+        var wms_layer_all = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+ 
+		function show_layer_info(event){
+            alert('Layer changed: ' + event.layer.name + ' | Property Changed: ' + event.property);
+        }
+        map.events.register('changelayer', map, show_layer_info);
+
+        map.addLayer(wms_layer_all);
+
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+    <div id='layer_switcher_control'></div>
+</body>
+</html>

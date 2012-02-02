@@ -1,0 +1,49 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta http-equiv='content-type' content='text/html;charset=UTF-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+        // Setup our map object
+        map = new OpenLayers.Map('map_element', {});
+        
+		// Add an Image Layer
+		var image_layer = new OpenLayers.Layer.Image(
+			'Wallpaper',
+			'http://us.starcraft2.com/images/wallpapers/wall3/wall3-1920x1200.jpg',
+			new OpenLayers.Bounds(-180,-112.5,180,112.5),
+			new OpenLayers.Size(1920,1200),
+			{numZoomLevels:7, maxResolution:.625}
+		);
+		
+		// Add another Image Layer
+		var image_layer_2 = new OpenLayers.Layer.Image(
+			'Wallpaper 2',
+			'http://us.starcraft2.com/images/wallpapers/wall6/wall6-1920x1200.jpg',
+			new OpenLayers.Bounds(-180,-112.5,180,112.5),
+			new OpenLayers.Size(1920,1200),
+			{numZoomLevels:7, maxResolution:.625, isBaseLayer:false, opacity:0.2}
+		);
+		
+
+		// Add the layers
+		map.addLayers([image_layer, image_layer_2]);
+        
+        // Add a layer switcher control
+        map.addControl(new OpenLayers.Control.LayerSwitcher({}));
+        
+        // Zoom the map to the max extent
+        map.zoomToMaxExtent();
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

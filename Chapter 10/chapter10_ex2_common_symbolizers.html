@@ -1,0 +1,93 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    var vector_layer;
+    
+    function init() {
+        //Create a map with an empty array of controls
+        map = new OpenLayers.Map('map_element');
+
+        //Create a base layer
+        var wms_layer = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+        map.addLayer(wms_layer);
+        
+        //Add vector layer
+        vector_layer = new OpenLayers.Layer.Vector('Basic Vector Layer');
+        map.addLayer(vector_layer);
+
+        //Create some points
+        for(var i=0; i<10; i++){
+            vector_layer.addFeatures([new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(
+                    (Math.floor(Math.random() * 360) - 180),
+	                (Math.floor(Math.random() * 180) - 90)
+	            )
+            )]);
+        }
+        
+        //Create a style object to be used by a StyleMap object
+        var vector_style = new OpenLayers.Style({
+            'cursor': 'pointer',
+            'fillColor': '#787878',
+            'fillOpacity': .8,
+            'fontColor': '#343434',
+            'pointRadius': 14,
+            'strokeColor': '#232323',
+            'strokeDashstyle': 'dot',
+            'strokeWidth': 3
+        });
+        
+        //create a select style
+        var vector_style_select = new OpenLayers.Style({
+            'fillColor': '#ffffff',
+            'fillOpacity': .9,
+			'graphicName': 'square',
+            'label': 'X',
+            'pointRadius': 16,
+            'strokeColor': '#343434',
+            'strokeDashstyle': 'solid',
+            'strokeWidth': 4
+        });
+        
+        //Create a style map object and set the 'default' intent to the 
+        //  style object we just created
+        var vector_style_map = new OpenLayers.StyleMap({
+            'default': vector_style,
+            'select': vector_style_select
+        });
+
+        //Add the style map to the vector layer
+        vector_layer.styleMap = vector_style_map;
+        
+        //Add a select feature control
+	    var select_feature_control = new OpenLayers.Control.SelectFeature(
+		    vector_layer
+	    );
+	    map.addControl(select_feature_control);	
+
+	    //Activate the control
+	    select_feature_control.activate();
+        
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 600px; height: 600px;'></div>
+</body>
+</html>

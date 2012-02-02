@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8' />
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map_1, map_2;
+
+    function init() {
+		//Create the first map object
+        map_1 = new OpenLayers.Map('map_1_element', {
+            controls: [ 
+                new OpenLayers.Control.Navigation(),
+                new OpenLayers.Control.PanZoomBar()
+            ],
+            maxResolution:0.0054931640625,
+            minResolution:0.00034332275390625
+        });
+
+        //Create a base layer
+        var wms_layer_all = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+
+        map_1.addLayer(wms_layer_all);
+        
+        var map_center = new OpenLayers.LonLat(-120, 34);
+
+        if(!map_1.getCenter()){
+            map_1.setCenter(map_center);
+        }
+        
+        //Create a second map
+        map_2 = new OpenLayers.Map('map_2_element', {
+            controls: [ 
+                new OpenLayers.Control.Navigation(),
+                new OpenLayers.Control.PanZoomBar()
+            ],
+            maxResolution: 0.17578125,
+            minResolution: 0.0439453125
+        });
+
+        //Clone the first map's layer
+        var wms_layer_all_map_2 = wms_layer_all.clone();
+
+        //Add the cloned layer to the second map object
+        map_2.addLayer(wms_layer_all_map_2);
+
+        //Zoom to some coordinate and zoom level on the second map
+        map_2.setCenter(map_center);
+ 
+        //Create event to update map centers       
+        function update_map_1(event){
+	        map_2.setCenter(map_1.getCenter(), null, true);
+        }
+        function update_map_2(event){
+	        map_1.setCenter(map_2.getCenter(), null, true);
+        }
+        
+        //Register map events
+        map_1.events.register('moveend', map_1, update_map_1);
+        map_2.events.register('moveend', map_2, update_map_2);
+
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_1_element' style='height: 500px; float:left; width:400px;'></div>
+    <div id='map_2_element' style='height: 500px; float:left; width:400px;'></div>
+    <div style='clear:both;'></div>
+    <div id='layer_switcher_control'></div>
+</body>
+</html>

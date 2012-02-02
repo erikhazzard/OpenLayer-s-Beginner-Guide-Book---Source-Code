@@ -1,0 +1,13 @@
+#layer_switcher_control {
+	border:2px solid #454545;
+	padding:2px;
+}
+#layer_switcher_control .baseLbl {
+	background:#cdcdcd;
+	font-size:1.3em;
+	font-weight:bold;
+}
+#layer_switcher_control .baseLayersDiv .labelSpan {
+	font-style: italic;
+	font-weight:bold;
+}

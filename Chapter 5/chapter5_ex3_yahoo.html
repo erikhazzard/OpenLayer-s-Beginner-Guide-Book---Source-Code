@@ -1,0 +1,52 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+            //Create the map object
+            map = new OpenLayers.Map('map_element');
+
+            //Hybrid Layer
+            var yahoo_hybrid = new OpenLayers.Layer.Yahoo(
+                "Hybrid",
+                {type: YAHOO_MAP_HYB, numZoomLevels: 24}
+            );
+                     
+            //Satellite Layer
+            var yahoo_satellite = new OpenLayers.Layer.Yahoo(
+                "Satellite",
+                {type: YAHOO_MAP_SAT, numZoomLevels: 20}
+            );
+
+            //Streets (Default) Layer
+            var yahoo_street = new OpenLayers.Layer.Yahoo(
+                "Street",
+                {}
+            );
+
+            //Add the Yahoo map layers
+            map.addLayers([yahoo_hybrid, yahoo_satellite, yahoo_street]);
+
+            //Add a layer switcher control
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+			// Zoom the map to the max extent 
+			if(!map.getCenter()){
+				map.zoomToMaxExtent();
+			}
+        }
+
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

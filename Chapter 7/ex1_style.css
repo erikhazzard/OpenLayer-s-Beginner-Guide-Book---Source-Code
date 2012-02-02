@@ -1,0 +1,26 @@
+/* Eveything in the body will recieve these styles*/
+body {
+    background:#ffffff;   
+	color:#000000;
+}
+
+#title {
+    font-size:1.5em;
+    font-variant: small-caps;
+}
+
+#content {
+    background:#ababab;
+    color:#f0f0f0;
+    font-weight:bold;
+    text-align:right;
+}
+    #message {
+        background:#336699;
+    }
+.background_green {
+    background: #22dd22;
+}
+.align_left {
+    text-align:left;
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+            //Create the map object
+            map = new OpenLayers.Map('map_element');
+
+            //Hybrid Layer
+			var ve_shaded = new OpenLayers.Layer.VirtualEarth(
+				"Shaded",
+				{type: VEMapStyle.Shaded}
+			);
+
+            //Roads Layer (Like shaded layer, only without shade)
+            var ve_road = new OpenLayers.Layer.VirtualEarth(
+                "Road",
+                {type: VEMapStyle.Road, animationEnabled: false}
+            );
+			
+            //Aerial (Satellite) Layer
+            var ve_aerial = new OpenLayers.Layer.VirtualEarth(
+                "Aerial",
+                {type: VEMapStyle.Aerial}
+            );
+			
+            //Hybrid view layer
+            var ve_hybrid = new OpenLayers.Layer.VirtualEarth(
+                "Hybrid",
+                {type: VEMapStyle.Hybrid}
+            );
+
+            //Add the Yahoo map layers
+            map.addLayers([ve_shaded, ve_aerial, ve_road, ve_hybrid]);
+
+            //Add a layer switcher control
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+			// Zoom the map to the max extent 
+			if(!map.getCenter()){
+				map.zoomToMaxExtent();
+			}
+        }
+
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+            //Create the map object
+            map = new OpenLayers.Map('map_element');
+
+            //OpenStreetMap Layer
+            var osm_layer = new OpenLayers.Layer.OSM(
+                'OpenStreetMap Layer', {}
+            );
+
+            //Add the OSM map layer
+            map.addLayers([osm_layer]);
+
+            //Add a layer switcher control
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+			// Zoom the map to the max extent 
+			if(!map.getCenter()){
+				map.zoomToMaxExtent();
+			}
+        }
+
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

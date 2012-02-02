@@ -1,0 +1,69 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+	<script src="http://maps.google.com/maps/api/js?sensor=false&v=3.2"></script> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+            //Create the map object
+            map = new OpenLayers.Map('map_element',{
+				maxExtent: new OpenLayers.Bounds(
+				-128 * 156543.0339,
+				-128 * 156543.0339,
+				128 * 156543.0339,
+				128 * 156543.0339),
+				maxResolution: 156543.0339,                
+				units: 'm',
+				projection: new OpenLayers.Projection('EPSG:900913'),
+				displayProjection: new OpenLayers.Projection("EPSG:4326"),
+			});
+
+            //Google streets is the normal map type, so we don't need to pass in a type
+            var google_streets = new OpenLayers.Layer.Google(
+                "Google Streets",
+                {numZoomLevels: 20}
+            );
+
+            //WMS Layer
+			var wms_layer = new OpenLayers.Layer.WMS(
+				'OpenLayers WMS',
+				'http://vmap0.tiles.osgeo.org/wms/vmap0',
+				{layers: 'basic,clabel,ctylabel,statelabel', transparent: true},
+				{isBaseLayer: false,
+				opacity: .7}
+			);
+
+            //Vector Layer
+			var vector_layer = new OpenLayers.Layer.Vector(
+				'Editable Vectors');
+
+            //Add the google map layers
+            map.addLayers([google_streets, wms_layer, vector_layer]);
+
+            //Add a vector editing control
+            map.addControl(new OpenLayers.Control.EditingToolbar(vector_layer));
+			
+			//Add a mouse position control
+			map.addControl(new OpenLayers.Control.MousePosition());
+			
+			// Add a layer switcher control
+			map.addControl(new OpenLayers.Control.LayerSwitcher({}));
+			
+			// Zoom the map to the max extent 
+			if(!map.getCenter()){
+				map.zoomToMaxExtent();
+			}
+        }
+
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    var vector_layer;
+    
+    function init() {
+        //Create a map with an empty array of controls
+        map = new OpenLayers.Map('map_element');
+
+        //Create a base layer
+        var wms_layer = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+        map.addLayer(wms_layer);
+        
+        //Add vector layer
+        vector_layer = new OpenLayers.Layer.Vector('Basic Vector Layer');
+        map.addLayer(vector_layer);
+   
+		var settlement_values = {
+            0: 'village',
+            1: 'city',
+        }
+		
+        //Create some points
+        for(var i=0; i<19; i++){
+            vector_layer.addFeatures([new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(
+                    (Math.floor(Math.random() * 360) - 180),
+	                (Math.floor(Math.random() * 180) - 90)
+	            ),
+	            {
+                    'population': Math.floor(Math.random() * 2000),
+					'settlement_type': settlement_values[(Math.floor(Math.random() * 2))]
+                }
+            )]);
+        }     
+
+        //Create a style object
+        var vector_style = new OpenLayers.Style();
+                
+        var filter_village_low_pop = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [
+                new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.LESS_THAN,
+                    property: 'population',
+                    value: 1000
+                }),
+				 new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.LIKE,
+                    property: 'settlement_type',
+                    value: 'village'
+                })
+            ]
+        });
+
+		var filter_village_high_pop = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [
+                new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.BETWEEN,
+                    property: 'population',
+                    lowerBoundary: 1000,
+					upperBoundary: 1500
+                }),
+				 new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.LIKE,
+                    property: 'settlement_type',
+                    value: 'village'
+                })
+            ]
+        });
+		
+		var filter_city = new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.OR,
+            filters: [
+                new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.GREATER_THAN,
+                    property: 'population',
+                    value: 1500
+                }),
+				 new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.LIKE,
+                    property: 'settlement_type',
+                    value: 'city'
+                }),
+            ]
+        });
+		
+        //ADD RULES            
+        //We'll use three rules to check for population size
+        var rule_village_low_pop = new OpenLayers.Rule({
+            filter: filter_village_low_pop,
+            symbolizer: {
+                fillColor: '#ababab', fillOpacity:.8, 
+                pointRadius:8, strokeColor: '#454545', 
+                strokeWidth:2
+            }
+        });   
+		
+		var rule_village_high_pop = new OpenLayers.Rule({
+            filter: filter_village_high_pop,
+            symbolizer: {
+				fillColor: '#FFFA93', fillOpacity:.8, 
+				pointRadius:8, strokeColor: '#AFAB57', 
+				strokeWidth:4,
+            }
+        });  
+
+		var rule_city = new OpenLayers.Rule({
+            filter: filter_city,
+            symbolizer: {
+				fillColor: '#BD1922', fillOpacity:.8,  
+				pointRadius:16, strokeColor: '#812B30', 
+				strokeWidth:6,
+				fontSize:'.8em', fontColor: '#efefef',
+				label: '${population}'
+            }
+        });  		
+        
+        
+        //Add the rules to the style object
+        vector_style.addRules([rule_village_low_pop, rule_village_high_pop, rule_city]);
+        
+        //Create a style map object
+        var vector_style_map = new OpenLayers.StyleMap({
+            'default': vector_style
+        });
+       
+        //Add the style map to the vector layer
+        vector_layer.styleMap = vector_style_map;
+        
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 600px; height: 600px;'></div>
+</body>
+</html>

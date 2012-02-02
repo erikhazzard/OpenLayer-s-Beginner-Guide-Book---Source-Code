@@ -1,0 +1,57 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+		var navigation_control = new OpenLayers.Control.Navigation({});
+		var controls_array = [
+			navigation_control,
+			new OpenLayers.Control.PanZoomBar({}),
+			new OpenLayers.Control.LayerSwitcher({}),
+			new OpenLayers.Control.Permalink(),
+			new OpenLayers.Control.MousePosition({})
+		];
+    
+        //Create a map with the controls defined above
+        map = new OpenLayers.Map('map_element', {
+            controls: controls_array
+        });
+
+        //Create a base layer
+        var wms = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+
+        map.addLayer(wms);
+        
+        //Add a control to the map
+        map.addControl(new OpenLayers.Control.ScaleLine());
+        
+		//Create a overview map control
+		var overview_map = new OpenLayers.Control.OverviewMap();
+		//Add multiple controls to the map
+		map.addControls([
+			overview_map,
+			new OpenLayers.Control.KeyboardDefaults()
+		]);
+				
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+</body>
+</html>

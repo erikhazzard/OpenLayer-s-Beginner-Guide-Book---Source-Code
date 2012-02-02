@@ -1,0 +1,84 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+	<style type='text/css'> 
+		/*Navigation Control*/ 
+		.olControlNavigationItemActive { 
+		  background: #226699 url('http://dev.openlayers.org/releases/OpenLayers-2.9.1/theme/default/img/pan_on.png'); 
+		  width:  22px;  
+		  height: 22px; 
+		} 
+		.olControlNavigationItemInactive { 
+		  background: #996622 url('http://dev.openlayers.org/releases/OpenLayers-2.9.1/theme/default/img/pan_off.png'); 
+		  width:  22px;  
+		  height: 22px; 
+		} 
+
+		/*Zoom Box Control*/ 
+		.olControlZoomBoxItemInactive { 
+		  width:  22px;  
+		  height: 22px; 
+		  background:#999933 url('http://dev.openlayers.org/releases/OpenLayers-2.9.1/img/drag-rectangle-off.png'); 
+		} 
+		.olControlZoomBoxItemActive { 
+		  width:  22px;  
+		  height: 22px; 
+		  background:#999966 url('http://dev.openlayers.org/releases/OpenLayers-2.9.1/img/drag-rectangle-on.png'); 
+		} 
+
+		/*Zoom to Max Extent Control*/ 
+		.olControlZoomToMaxExtentItemInactive { 
+		  width:  18px;  
+		  height: 18px; 
+		  background:#333399 url('http://dev.openlayers.org/releases/OpenLayers-2.9.1/img/zoom-world-mini.png'); 
+		} 
+	</style> 
+    <script type='text/javascript'>
+
+    var map;
+    
+    function init() {
+        map = new OpenLayers.Map('map_element', {});
+
+        //Create a base layer
+        var wms_base = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+
+        map.addLayer(wms_base);
+        
+        var navigation_control = new OpenLayers.Control.Navigation();
+
+        var control_panel = new OpenLayers.Control.Panel({
+	        div: document.getElementById('panel_div'),
+	        defaultControl: navigation_control
+        }); 
+
+        //Add some controls to it
+        control_panel.addControls([
+            navigation_control,
+            new OpenLayers.Control.ZoomBox(),
+            new OpenLayers.Control.ZoomToMaxExtent()
+        ])
+
+        //Add the Panel to the map
+        map.addControl(control_panel);
+		
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'></div>
+    <div id='panel_div'></div>
+</body>
+</html>

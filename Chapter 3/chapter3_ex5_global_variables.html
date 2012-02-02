@@ -1,0 +1,83 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+	<title>My OpenLayers Map</title>	
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    var wms_layer_map, wms_layer_labels, wms_state_lines, wms_water_depth, wms_roads;
+	
+	function init() {
+        // Setup our map object
+        map = new OpenLayers.Map('map_element', {});
+        
+        // Setup our two layer objects
+		wms_layer_map = new OpenLayers.Layer.WMS(
+			'Base layer',
+			'http://vmap0.tiles.osgeo.org/wms/vmap0',
+			{layers: 'basic'},
+			{isBaseLayer: true}
+		);
+
+        // Add an overlay layer.  We set the transparent property to true
+        //    in the WMS parameters so it doesn't cover up the base layer
+        wms_layer_labels = new OpenLayers.Layer.WMS(
+            'Location Labels',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'clabel,ctylabel,statelabel',
+            transparent: true},
+            {visibility: false, opacity:0.5}
+        );
+		
+		//Add some more layers, this time we'll specify more options
+        wms_state_lines = new OpenLayers.Layer.WMS(
+            'State Line Layer',
+            'http://labs.metacarta.com/wms/vmap0',
+            {layers: 'stateboundary',
+			transparent: true},
+            {displayInLayerSwitcher: false, 
+			minScale: 13841995.078125}
+        );
+		wms_water_depth = new OpenLayers.Layer.WMS(
+            'Water Depth',
+            'http://labs.metacarta.com/wms/vmap0',
+            {layers: 'depthcontour',
+            transparent: true},
+            {opacity:.8}
+        );
+        
+		wms_roads = new OpenLayers.Layer.WMS(
+			'Roads',
+			'http://labs.metacarta.com/wms/vmap0',
+			{layers: 'priroad,secroad,rail',
+			transparent: true},
+			{transistionEffect:'resize'}
+		);
+				
+        // Add layers to the map
+        map.addLayers([
+			wms_layer_map, 
+			wms_layer_labels,
+			wms_state_lines,
+			wms_water_depth,
+			wms_roads]);
+        
+        // Add a layer switcher control
+        map.addControl(new OpenLayers.Control.LayerSwitcher({}));
+        
+        // Zoom the map to the max extent 
+		if(!map.getCenter()){
+			map.zoomToMaxExtent();
+		}
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 500px; height: 500px;'>
+	</div>
+</body>
+</html>

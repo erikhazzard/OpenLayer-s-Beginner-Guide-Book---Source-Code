@@ -1,0 +1,91 @@
+<!DOCTYPE html> 
+<html lang='en'> 
+<head> 
+    <meta charset='utf-8' /> 
+    <script type='text/javascript' src='OpenLayers.js'></script>
+    <script type='text/javascript'>
+
+    var map;
+    var vector_layer;
+    
+    function init() {
+        //Create a map with an empty array of controls
+        map = new OpenLayers.Map('map_element');
+
+        //Create a base layer
+        var wms_layer = new OpenLayers.Layer.WMS(
+            'OpenLayers WMS',
+            'http://vmap0.tiles.osgeo.org/wms/vmap0',
+            {layers: 'basic'},
+            {}
+        );
+        map.addLayer(wms_layer);
+        
+        //Add vector layer
+        vector_layer = new OpenLayers.Layer.Vector('Settlement Vector Layer');
+        map.addLayer(vector_layer);
+
+        var settlement_values = {
+            0: 'hut',
+            1: 'village',
+            2: 'city',
+            3: 'metropolis',
+            4: 'facebook'
+        }
+
+        //Create some points
+        for(var i=0; i<20; i++){
+            vector_layer.addFeatures([new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(
+                    (Math.floor(Math.random() * 360) - 180),
+	                (Math.floor(Math.random() * 180) - 90)
+	            ),
+	            {
+                    'settlement_type': settlement_values[(Math.floor(Math.random() * 5))]
+                }
+            )]);
+        }     
+
+        //Create a style map object
+        var vector_style_map = new OpenLayers.StyleMap({});
+        
+        //ADD RULES            
+        //We need to create a 'lookup table' that contains the desired values 
+        //  and corresponding symbolizer
+        var symbolizers_lookup = {
+            'hut': {
+                'fillColor': '#ababab', 'fillOpacity':.8, 'pointRadius':4, 'strokeColor': '#454545', 'strokeWidth':2
+             },
+            'village': {
+                'fillColor': '#FFFA93', 'fillOpacity':.8, 'pointRadius':8, 'strokeColor': '#AFAB57', 'strokeWidth':4
+            },
+            'city': {
+                'fillColor': '#aaee77', 'fillOpacity':.8, 'pointRadius':12, 'strokeColor': '#669933', 'strokeWidth':5
+            },
+            'metropolis': {
+                'fillColor': '#BD1922','fillOpacity':.8,  'pointRadius':16, 'strokeColor': '#812B30', 'strokeWidth':6
+            },
+            'facebook': {
+                'fillColor': '#336699','fillOpacity':.8,  'pointRadius':26, 'strokeColor': '#003366', 'strokeWidth':2
+            } 
+        }
+        
+        //Now, call addUniqueValueRules and pass in the symbolizer lookups
+        vector_style_map.addUniqueValueRules('default', 'settlement_type', symbolizers_lookup);
+       
+        //Add the style map to the vector layer
+        vector_layer.styleMap = vector_style_map;
+        
+        if(!map.getCenter()){
+            map.zoomToMaxExtent();
+        }
+
+    }
+
+    </script>
+</head>
+
+<body onload='init();'>
+    <div id='map_element' style='width: 600px; height: 600px;'></div>
+</body>
+</html>

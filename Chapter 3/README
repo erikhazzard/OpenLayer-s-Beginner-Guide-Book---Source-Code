@@ -1,0 +1,12 @@
+Structure of code follows that which is outlined in chapter1
+
+ROOT CODE FOLDER
++code/
+    +img/
+        -OpenLayer files...
+    +theme   
+        -OpenLayer files...
+    -index.html
+    -OpenLayers.js
+    
+Code is ready to use out of the box.

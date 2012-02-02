@@ -1,0 +1,51 @@
+/*Scalebar Control*/
+.olControlScaleLine {
+    background: #777777;
+    color:#ffffff;
+}
+
+/*NavToolbar controls*/
+.olControlNavToolbar {
+    top:50px;
+}
+.olControlNavigationItemInactive {
+    background: #787878 !important;
+    border: 2px solid #232323;
+    cursor: pointer;
+    left:0 !important;
+    top:0 !important;
+}
+.olControlNavigationItemActive {
+    background: #dedede !important;
+    border: 2px solid #787878;
+    cursor: pointer;
+    left:0 !important;
+    top:0 !important;
+}
+.olControlZoomBoxItemInactive {
+    background: #336699 !important;
+    border: 2px solid #232323;
+    cursor: pointer;
+    left:0 !important;
+    top:0 !important;
+}
+.olControlZoomBoxItemActive {
+    background: #77aadd !important;
+    border: 2px solid #5588aa;
+    cursor: pointer;
+    left:0 !important;
+    top:0 !important;
+}
+
+/*Overview map controls*/
+.olControlOverviewMapMaximizeButton, .olControlOverviewMapMinimizeButton{
+    bottom:0 !important;
+}
+
+.olControlOverviewMapElement {
+    background: #cdcdcd !important;
+}
+.olControlOverviewMapExtentRectangle {
+    background:rgba(60,90,120,.7);
+    border:2px dashed #22dd22 !important;
+}
